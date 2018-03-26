@@ -25,6 +25,7 @@ const MethodRow = styled(InlineEdit)`
   border-bottom: ${dottedBorder};
   padding: 4px;
   font-size: 14px;
+  word-wrap: break-word;
 `;
 
 const ClassNode = ({ grClass, onChange, ...restProps }) => (
@@ -45,7 +46,7 @@ const ClassNode = ({ grClass, onChange, ...restProps }) => (
     dragHandleClassName=".handle"
   >
     <Header className="handle">{grClass.get('name')}</Header>
-    {(grClass.get('methods') || []).map((method, i) => (
+    {(grClass.get('methods') || []).map(method => (
       <MethodRow
         key={method.get('header')}
         text={method.get('header')}
