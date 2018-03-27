@@ -159,7 +159,7 @@ class ClassNode extends React.Component {
               color="inherit"
               onClick={() => this.onEditMethodClick(method)}
             >
-              <Edit style={tinyIconStyle}/>
+              <Edit style={tinyIconStyle} />
             </TinyIconBtn>
 
             <TinyIconBtn
@@ -167,7 +167,7 @@ class ClassNode extends React.Component {
               color="inherit"
               onClick={() => this.onDeleteMethodClick(method)}
             >
-              <Delete style={tinyIconStyle}/>
+              <Delete style={tinyIconStyle} />
             </TinyIconBtn>
           </MethodRow>
         ))}

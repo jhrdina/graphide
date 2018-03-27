@@ -15,6 +15,7 @@ import { Map, List } from 'immutable';
 import ClassNode from './ClassNode';
 import LogPane from './LogPane';
 import GetValueDialog from './GetValueDialog';
+import Runner from './Runner';
 
 const theme = createMuiTheme({
   palette: {
@@ -64,36 +65,43 @@ const BottomLogPane = styled(LogPane)`
 `;
 
 class App extends React.Component {
-  state = {
-    doc: Map({
-      classes: List([
-        Map({
-          name: 'Program',
-          width: 200,
-          height: 200,
-          x: 20,
-          y: 70,
-          methods: List([
-            Map({
-              header: 'static main()',
-              body: 'console.log("Hello world");',
-            }),
-            Map({
-              header: 'doAmazingStuff(duration)',
-              body: 'console.log("Hello world");',
-            }),
-          ]),
-        }),
-      ]),
-      counter: 0,
-    }),
-    log: List(['Hello world!!!']),
-    mainSelDiag: Map({
-      open: false,
-    }),
-  };
+  constructor() {
+    super();
+    this.state = {
+      doc: Map({
+        classes: List([
+          Map({
+            name: 'Program',
+            width: 200,
+            height: 200,
+            x: 20,
+            y: 70,
+            methods: List([
+              Map({
+                header: 'static main()',
+                body: 'console.log("Hello world");',
+              }),
+              Map({
+                header: 'doAmazingStuff(duration)',
+                body: 'console.log("Hello world");',
+              }),
+            ]),
+          }),
+        ]),
+        counter: 0,
+        main: 'Program.main',
+      }),
+      log: List(['Hello world!!!']),
+      mainSelDiag: Map({
+        open: false,
+      }),
+      runner: new Runner(),
+    };
 
-  onClassChange(grClass) {
+    this.state.runner.addClasses(this.state.doc.get('classes'));
+  }
+
+  onClassChange(grClass, oldClass) {
     this.setState({
       doc: this.state.doc.update('classes', classes =>
         classes.set(
@@ -101,27 +109,31 @@ class App extends React.Component {
           grClass,
         )),
     });
+    this.state.runner.updateClass(grClass, oldClass);
   }
 
   onAddClassClick() {
     const clsNumber = this.state.doc.get('counter') + 1;
+    const grClass = Map({
+      name: `Class${clsNumber}`,
+      width: 200,
+      height: 200,
+      x: 20,
+      y: 70,
+      methods: List([
+        Map({
+          header: 'method(par1, par2)',
+        }),
+      ]),
+    });
+
     this.setState({
       doc: this.state.doc
-        .update('classes', classes =>
-          classes.push(Map({
-            name: `Class${clsNumber}`,
-            width: 200,
-            height: 200,
-            x: 20,
-            y: 70,
-            methods: List([
-              Map({
-                header: 'method(par1, par2)',
-              }),
-            ]),
-          })))
+        .update('classes', classes => classes.push(grClass))
         .set('counter', clsNumber),
     });
+
+    this.state.runner.addClass(grClass);
   }
 
   onMainChange(main) {
@@ -142,6 +154,10 @@ class App extends React.Component {
     });
   }
 
+  onRunClick() {
+    Runner.run(this.state.doc.get('main'));
+  }
+
   render() {
     const { classes } = this.props;
     const { doc, log, mainSelDiag } = this.state;
@@ -154,8 +170,10 @@ class App extends React.Component {
                 <Add className={classes.leftIcon} />
                 Nová třída
               </ToolButton>
-              <ToolButton>
-                <PlayArrow className={classes.leftIcon} />
+              <ToolButton onClick={() => this.onRunClick()}>
+                <PlayArrow
+                  className={classes.leftIcon}
+                />
                 Spustit
               </ToolButton>
               <ToolButton onClick={() => this.onOpenMainSelDiag()}>
@@ -169,7 +187,7 @@ class App extends React.Component {
               <ClassNode
                 key={grClass.get('name')}
                 grClass={grClass}
-                onChange={d => this.onClassChange(d)}
+                onChange={d => this.onClassChange(d, grClass)}
               />
             ))}
           <BottomLogPane items={log} />

@@ -17,6 +17,9 @@
     "no-shadow": 0,
     "import/prefer-default-export": 0,
     "import/extensions": 0,
+    "no-new-func": 0,
+    "func-names": 0,
+    "no-param-reassign": 0,
     "max-len": [
       "error",
       80,
