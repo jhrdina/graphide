@@ -14,6 +14,7 @@ import { Map, List } from 'immutable';
 
 import ClassNode from './ClassNode';
 import LogPane from './LogPane';
+import GetValueDialog from './GetValueDialog';
 
 const theme = createMuiTheme({
   palette: {
@@ -86,6 +87,10 @@ class App extends React.Component {
       ]),
       counter: 0,
     }),
+    log: List(['Hello world!!!']),
+    mainSelDiag: Map({
+      open: false,
+    }),
   };
 
   onClassChange(grClass) {
@@ -119,9 +124,27 @@ class App extends React.Component {
     });
   }
 
+  onMainChange(main) {
+    this.setState({
+      doc: this.state.doc.set('main', main),
+    });
+  }
+
+  onOpenMainSelDiag() {
+    this.setState({
+      mainSelDiag: this.state.mainSelDiag.set('open', true),
+    });
+  }
+
+  onCloseMainSelDiag() {
+    this.setState({
+      mainSelDiag: this.state.mainSelDiag.set('open', false),
+    });
+  }
+
   render() {
     const { classes } = this.props;
-    const { doc } = this.state;
+    const { doc, log, mainSelDiag } = this.state;
     return (
       <MuiThemeProvider theme={theme}>
         <Wrapper>
@@ -135,6 +158,9 @@ class App extends React.Component {
                 <PlayArrow className={classes.leftIcon} />
                 Spustit
               </ToolButton>
+              <ToolButton onClick={() => this.onOpenMainSelDiag()}>
+                Nastavit main
+              </ToolButton>
             </MyToolbar>
           </AppBar>
           {doc
@@ -146,7 +172,16 @@ class App extends React.Component {
                 onChange={d => this.onClassChange(d)}
               />
             ))}
-          <BottomLogPane />
+          <BottomLogPane items={log} />
+
+          <GetValueDialog
+            open={mainSelDiag.get('open')}
+            title="Main method name"
+            message="e.g.: Program.main"
+            value={doc.get('main')}
+            onChange={main => this.onMainChange(main)}
+            onClose={() => this.onCloseMainSelDiag()}
+          />
         </Wrapper>
       </MuiThemeProvider>
     );
