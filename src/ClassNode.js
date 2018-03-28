@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Rnd from 'react-rnd';
 import IconButton from 'material-ui/IconButton';
-import { Add, Delete, Edit } from 'material-ui-icons';
+import { Add, Close, Edit } from 'material-ui-icons';
 import { Map } from 'immutable';
 import Button from 'material-ui/Button';
 import Dialog, {
@@ -21,6 +21,7 @@ const Wrapper = styled(Rnd)`
   border: ${solidBorder};
   border-radius: 4px;
   background-color: #272822;
+  overflow: hidden;
 `;
 
 const Header = styled.div`
@@ -65,6 +66,7 @@ const TinyIconBtn = styled(IconButton)`
     width: 16px;
     height: 16px;
     margin-left: 4px;
+    float: ${props => props.float};
   }
 `;
 
@@ -125,8 +127,15 @@ class ClassNode extends React.Component {
       methods.delete(methods.findIndex(item => item.get('header') === method.get('header')))));
   }
 
+  onClassNameChange(name) {
+    const { grClass, onChange } = this.props;
+    onChange(grClass.set('name', name));
+  }
+
   render() {
-    const { grClass, onChange, ...restProps } = this.props;
+    const {
+      grClass, onChange, onDelete, ...restProps
+    } = this.props;
     const { methodEditOpened, methodEditMethod, methodEditBody } = this.state;
     return (
       <Wrapper
@@ -145,7 +154,22 @@ class ClassNode extends React.Component {
         }}
         dragHandleClassName=".handle"
       >
-        <Header className="handle">{grClass.get('name')}</Header>
+        <Header className="handle">
+          <InlineEdit
+            text={grClass.get('name')}
+            paramName="value"
+            staticElement="span"
+            change={d => this.onClassNameChange(d.value)}
+          />
+          <TinyIconBtn
+            aria-label="Upravit"
+            color="inherit"
+            float="right"
+            onClick={() => onDelete && onDelete()}
+          >
+            <Close style={tinyIconStyle} />
+          </TinyIconBtn>
+        </Header>
         {(grClass.get('methods') || []).map(method => (
           <MethodRow key={method.get('header')}>
             <MethodHeaderEdit
@@ -167,7 +191,7 @@ class ClassNode extends React.Component {
               color="inherit"
               onClick={() => this.onDeleteMethodClick(method)}
             >
-              <Delete style={tinyIconStyle} />
+              <Close style={tinyIconStyle} />
             </TinyIconBtn>
           </MethodRow>
         ))}

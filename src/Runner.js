@@ -33,9 +33,9 @@ const removeFromClass = (Cls, grClass) => {
   grClass.get('methods').forEach((method) => {
     const hdr = parseHeader(method.get('header'));
     if (hdr.static) {
-      Cls[hdr.name] = undefined;
+      delete Cls[hdr.name];
     } else {
-      Cls.prototype[hdr.name] = undefined;
+      delete Cls.prototype[hdr.name];
     }
   });
 };
@@ -61,8 +61,10 @@ export default class Runner {
   updateClass(grClass, oldClass) {
     if (oldClass.get('name') !== grClass.get('name')) {
       const tmp = this.classes[oldClass.get('name')];
-      this.classes[oldClass.get('name')] = undefined;
+      delete this.classes[oldClass.get('name')];
+      delete window[oldClass.get('name')];
       this.classes[grClass.get('name')] = tmp;
+      window[grClass.get('name')] = tmp;
     }
 
     const Cls = this.classes[grClass.get('name')];
@@ -84,6 +86,12 @@ export default class Runner {
     addToClass(Cls, grClass);
     this.classes[name] = Cls;
     window[name] = Cls;
+  }
+
+  removeClass(grClass) {
+    const name = grClass.get('name');
+    delete this.classes[name];
+    delete window[name];
   }
 
   static run(mainPath) {

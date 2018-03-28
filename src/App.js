@@ -72,18 +72,19 @@ class App extends React.Component {
         classes: List([
           Map({
             name: 'Program',
-            width: 200,
+            width: 230,
             height: 200,
             x: 20,
             y: 70,
             methods: List([
               Map({
                 header: 'static main()',
-                body: 'console.log("Hello world");',
+                body: 'let prog = new Program();\n' +
+                      "prog.printHello('World');",
               }),
               Map({
-                header: 'doAmazingStuff(duration)',
-                body: 'console.log("Hello world");',
+                header: 'printHello(toWho)',
+                body: 'log(`Hello ${toWho}!`);',
               }),
             ]),
           }),
@@ -91,7 +92,7 @@ class App extends React.Component {
         counter: 0,
         main: 'Program.main',
       }),
-      log: List(['Hello world!!!']),
+      log: List(),
       mainSelDiag: Map({
         open: false,
       }),
@@ -99,6 +100,11 @@ class App extends React.Component {
     };
 
     this.state.runner.addClasses(this.state.doc.get('classes'));
+    window.log = (...params) => {
+      this.setState({
+        log: this.state.log.push(params.join(' ')),
+      });
+    };
   }
 
   onClassChange(grClass, oldClass) {
@@ -110,6 +116,14 @@ class App extends React.Component {
         )),
     });
     this.state.runner.updateClass(grClass, oldClass);
+  }
+
+  onClassDelete(grClass) {
+    this.setState({
+      doc: this.state.doc.update('classes', classes =>
+        classes.delete(classes.findIndex(item => item.get('name') === grClass.get('name')))),
+    });
+    this.state.runner.removeClass(grClass);
   }
 
   onAddClassClick() {
@@ -171,9 +185,7 @@ class App extends React.Component {
                 Nová třída
               </ToolButton>
               <ToolButton onClick={() => this.onRunClick()}>
-                <PlayArrow
-                  className={classes.leftIcon}
-                />
+                <PlayArrow className={classes.leftIcon} />
                 Spustit
               </ToolButton>
               <ToolButton onClick={() => this.onOpenMainSelDiag()}>
@@ -188,9 +200,10 @@ class App extends React.Component {
                 key={grClass.get('name')}
                 grClass={grClass}
                 onChange={d => this.onClassChange(d, grClass)}
+                onDelete={() => this.onClassDelete(grClass)}
               />
             ))}
-          <BottomLogPane items={log} />
+          <BottomLogPane items={log} maxHeight={300} />
 
           <GetValueDialog
             open={mainSelDiag.get('open')}

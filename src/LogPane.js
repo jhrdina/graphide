@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Iterable } from 'immutable';
 
 const solidBorder = '1px solid #75715e';
+const dottedBorder = '1px dotted #464741';
 
 const Wrapper = styled.div`
   border-top: ${solidBorder};
@@ -11,6 +12,7 @@ const Wrapper = styled.div`
   min-height: 100px;
   display: flex;
   flex-direction: column;
+  max-height: ${props => props.maxHeight && `${props.maxHeight}px`};
 `;
 
 const Header = styled.div`
@@ -22,9 +24,10 @@ const Header = styled.div`
 `;
 
 const LogRow = styled.div`
+  border-bottom: ${dottedBorder};
   font-size: 14px;
   font-family: monospace;
-  padding: 4px;
+  padding: 2px 4px;
   &::before {
     content: '> ';
   }
@@ -35,14 +38,27 @@ const Scrollable = styled.div`
   overflow-y: auto;
 `;
 
-const LogPane = ({ items, ...restProps }) => (
-  <Wrapper {...restProps}>
-    <Header>Log</Header>
-    <Scrollable>
-      {items.map((text, i) => <LogRow key={i}>{text}</LogRow>)}
-    </Scrollable>
-  </Wrapper>
-);
+class LogPane extends React.Component {
+  componentDidUpdate() {
+    this.scrollable.scrollTop = this.scrollable.scrollHeight;
+  }
+
+  render() {
+    const { items, ...restProps } = this.props;
+    return (
+      <Wrapper {...restProps}>
+        <Header>Log</Header>
+        <Scrollable
+          innerRef={(el) => {
+            this.scrollable = el;
+          }}
+        >
+          {items.map((text, i) => <LogRow key={i}>{text}</LogRow>)}
+        </Scrollable>
+      </Wrapper>
+    );
+  }
+}
 
 LogPane.propTypes = {
   items: PropTypes.instanceOf(Iterable).isRequired,

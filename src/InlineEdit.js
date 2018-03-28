@@ -42,7 +42,7 @@ class InlineEdit extends React.Component {
     if (this.state.editing && !prevState.editing) {
       inputElem.focus();
       selectInputText(inputElem);
-    } else if (this.state.editing && prevProps.text != this.props.text) {
+    } else if (this.state.editing && prevProps.text !== this.props.text) {
       this.finishEditing();
     }
   }
@@ -57,7 +57,7 @@ class InlineEdit extends React.Component {
   finishEditing = () => {
     if (
       this.isInputValid(this.state.text) &&
-      this.props.text != this.state.text
+      this.props.text !== this.state.text
     ) {
       this.commitEditing();
     } else if (

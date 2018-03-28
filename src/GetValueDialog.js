@@ -9,9 +9,10 @@ import Dialog, {
 import TextField from 'material-ui/TextField';
 
 class GetValueDialog extends React.Component {
-  state = {
-    value: '',
-  };
+  constructor(props) {
+    super(props);
+    this.state = { value: props.value };
+  }
 
   componentWillReceiveProps(props) {
     if (this.props.value !== props.value) {
@@ -22,8 +23,9 @@ class GetValueDialog extends React.Component {
   onClose(save) {
     if (save) {
       this.props.onChange(this.state.value);
+    } else {
+      this.setState({ value: this.props.value });
     }
-    this.setState({ value: '' });
     this.props.onClose();
   }
 
