@@ -17,6 +17,8 @@ import React from 'react';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Button from 'material-ui/Button';
+import IconButton from 'material-ui/IconButton';
+import Tooltip from 'material-ui/Tooltip';
 import { Add, PlayArrow } from 'material-ui-icons';
 import {
   createMuiTheme,
@@ -27,6 +29,7 @@ import styled from 'styled-components';
 
 import { Map, List } from 'immutable';
 
+import GithubIcon from './GithubIcon';
 import ClassNode from './ClassNode';
 import LogPane from './LogPane';
 import GetValueDialog from './GetValueDialog';
@@ -72,6 +75,10 @@ const MyToolbar = styled(Toolbar)`
 `;
 
 const ToolButton = props => <Button color="inherit" {...props} />;
+
+const Spacer = styled.div`
+  flex: 1;
+`;
 
 const BottomLogPane = styled(LogPane)`
   position: absolute;
@@ -194,9 +201,7 @@ class App extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const {
-      doc, log, mainSelDiag,
-    } = this.state;
+    const { doc, log, mainSelDiag } = this.state;
     return (
       <MuiThemeProvider theme={theme}>
         <Wrapper>
@@ -213,6 +218,16 @@ class App extends React.Component {
               <ToolButton onClick={() => this.onOpenMainSelDiag()}>
                 Nastavit main
               </ToolButton>
+              <Spacer />
+              <Tooltip title="Zdrojové kódy">
+                <IconButton
+                  color="inherit"
+                  href="https://github.com/jhrdina/graphide"
+                  target="_blank"
+                >
+                  <GithubIcon />
+                </IconButton>
+              </Tooltip>
             </MyToolbar>
           </AppBar>
           {doc
