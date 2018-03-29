@@ -43,6 +43,7 @@ const LogRow = styled.div`
   font-size: 14px;
   font-family: monospace;
   padding: 2px 4px;
+  white-space: pre;
   &::before {
     content: '> ';
   }

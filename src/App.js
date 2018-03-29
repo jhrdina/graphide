@@ -94,8 +94,8 @@ class App extends React.Component {
             methods: List([
               Map({
                 header: 'static main()',
-                body: 'let prog = new Program();\n' +
-                      "prog.printHello('World');",
+                body:
+                  'let prog = new Program();\n' + "prog.printHello('World');",
               }),
               Map({
                 header: 'printHello(toWho)',
@@ -184,12 +184,19 @@ class App extends React.Component {
   }
 
   onRunClick() {
-    Runner.run(this.state.doc.get('main'));
+    try {
+      Runner.run(this.state.doc.get('main'));
+    } catch (e) {
+      window.log(`${e.toString()}\n\nStack trace je vidět v konzoli DevTools.`);
+      console.log(e);
+    }
   }
 
   render() {
     const { classes } = this.props;
-    const { doc, log, mainSelDiag } = this.state;
+    const {
+      doc, log, mainSelDiag,
+    } = this.state;
     return (
       <MuiThemeProvider theme={theme}>
         <Wrapper>
