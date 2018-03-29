@@ -2,8 +2,10 @@
   "name": "graphide",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://jhrdina.github.io/graphide",
   "dependencies": {
     "conventional-redux": "^1.0.1",
+    "gh-pages": "^1.1.0",
     "immutable": "^3.8.2",
     "material-ui": "^1.0.0-beta.38",
     "material-ui-icons": "^1.0.0-beta.36",
@@ -16,6 +18,8 @@
     "styled-components": "^3.2.3"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
