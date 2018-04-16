@@ -133,7 +133,7 @@ class App extends React.Component {
     this.setState(prevState => ({
       doc: prevState.doc.update('classes', classes =>
         classes.set(
-          classes.findIndex(item => item.get('name') === grClass.get('name')),
+          classes.findIndex(item => item.get('name') === oldClass.get('name')),
           grClass,
         )),
     }));
