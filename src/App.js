@@ -102,7 +102,7 @@ class App extends React.Component {
               Map({
                 header: 'static main()',
                 body:
-                  'let prog = new Program();\n' + "prog.printHello('World');",
+                  "let prog = new Program();\nprog.printHello('World');",
               }),
               Map({
                 header: 'printHello(toWho)',
@@ -123,28 +123,28 @@ class App extends React.Component {
 
     this.state.runner.addClasses(this.state.doc.get('classes'));
     window.log = (...params) => {
-      this.setState({
-        log: this.state.log.push(params.join(' ')),
-      });
+      this.setState(prevState => ({
+        log: prevState.log.push(params.join(' ')),
+      }));
     };
   }
 
   onClassChange(grClass, oldClass) {
-    this.setState({
-      doc: this.state.doc.update('classes', classes =>
+    this.setState(prevState => ({
+      doc: prevState.doc.update('classes', classes =>
         classes.set(
           classes.findIndex(item => item.get('name') === grClass.get('name')),
           grClass,
         )),
-    });
+    }));
     this.state.runner.updateClass(grClass, oldClass);
   }
 
   onClassDelete(grClass) {
-    this.setState({
-      doc: this.state.doc.update('classes', classes =>
+    this.setState(prevState => ({
+      doc: prevState.doc.update('classes', classes =>
         classes.delete(classes.findIndex(item => item.get('name') === grClass.get('name')))),
-    });
+    }));
     this.state.runner.removeClass(grClass);
   }
 
@@ -173,21 +173,21 @@ class App extends React.Component {
   }
 
   onMainChange(main) {
-    this.setState({
-      doc: this.state.doc.set('main', main),
-    });
+    this.setState(prevState => ({
+      doc: prevState.doc.set('main', main),
+    }));
   }
 
   onOpenMainSelDiag() {
-    this.setState({
-      mainSelDiag: this.state.mainSelDiag.set('open', true),
-    });
+    this.setState(prevState => ({
+      mainSelDiag: prevState.mainSelDiag.set('open', true),
+    }));
   }
 
   onCloseMainSelDiag() {
-    this.setState({
-      mainSelDiag: this.state.mainSelDiag.set('open', false),
-    });
+    this.setState(prevState => ({
+      mainSelDiag: prevState.mainSelDiag.set('open', false),
+    }));
   }
 
   onRunClick() {
